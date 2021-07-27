@@ -1,1 +1,1 @@
-# README TEST
+# SSAFY-Algorithm Study
