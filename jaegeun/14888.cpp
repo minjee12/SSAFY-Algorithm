@@ -53,14 +53,7 @@ void rec(int level, int before)
 		if (opt[i])
 		{
 			opt[i]--;
-			if (level > 1) // 두번 째 이후
-			{
-				rec(level + 1, calc(before, opr[level], i));
-			}
-			else // 첫 번째
-			{
-				rec(level + 1, calc(opr[0], opr[1], i));
-			}
+			rec(level + 1, calc(before, opr[level], i));
 			opt[i]++;
 		}
 	}
