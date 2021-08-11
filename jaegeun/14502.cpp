@@ -1,4 +1,4 @@
-// ø¨±∏º“
+Ôªø// Ïó∞Íµ¨ÏÜå
 // https://www.acmicpc.net/problem/14502
 
 #include <iostream>
@@ -84,7 +84,7 @@ void mk_wall(int level)
 			}
 		}
 		max_safe_area = max(cnt_safe_area(), max_safe_area);
-		memset(lab_visited, 0, sizeof(lab_visited)); // πÊπÆ ±‚∑œ √ ±‚»≠
+		memset(lab_visited, 0, sizeof(lab_visited)); // Î∞©Î¨∏ Í∏∞Î°ù Ï¥àÍ∏∞Ìôî
 		return;
 	}
 	for (int i = 0; i < N; i++)
