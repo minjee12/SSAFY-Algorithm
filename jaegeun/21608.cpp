@@ -2,7 +2,9 @@
 // https://www.acmicpc.net/problem/21608
 
 #include <iostream>
-#include <queue>
+#include <vector>
+#include <cstring>
+#include <cmath>
 
 #define SIZE 20
 #define EMPTY 0
@@ -11,7 +13,9 @@
 typedef struct {
 	int stuNum;
 	int pref[4];
-}stu_pref;
+	int final_x;
+	int final_y;
+}stu;
 using namespace std;
 
 int N = 0;
@@ -21,28 +25,54 @@ int dy[] = { 0, 0, -1, 1 };
 
 int Class[SIZE][SIZE] = { 0, };
 
-vector<stu_pref> stu_q;
+vector<stu> stu_q;
 
-// 빈 자리가 제일 많은 칸 탐색
-// 맨 마지막부터 탐색할 경우, 가장 작은 행, 열을 찾을 수 있음
-void calc_empty(stu_pref stu, vector<pair<int, int>> pos, int& x, int& y)
+// Class[x][y]에서 s의 선호 학생 수 반환
+int find_pref(stu s, int x, int y)
+{
+	int pref_num = 0;
+	for (int d = 0; d < 4; d++)
+	{
+		int nx = x + dx[d];
+		int ny = y + dy[d];
+		if (0 <= nx && nx < N && 0 <= ny && ny < N)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				if (s.pref[i] == Class[nx][ny]) pref_num++;
+			}
+		}
+	}
+	return pref_num;
+}
+
+// Class[x][y]에서 주변 빈 자리 수 계산
+int find_empty(int x, int y)
+{
+	int empty_num = 0;
+	for (int d = 0; d < 4; d++)
+	{
+		int nx = x + dx[d];
+		int ny = y + dy[d];
+		if (0 <= nx && nx < N && 0 <= ny && ny < N)
+		{
+			if (Class[nx][ny] == EMPTY) empty_num++;
+		}
+	}
+	return empty_num;
+}
+
+// 조건 2, 3에 해당하는 칸을 x, y에 저장
+void calc_empty(vector<pair<int, int>> pos, int& x, int& y)
 {
 	int max_empty = 0;
-
 	int board[SIZE][SIZE] = { 0, }; // 주변 빈 자리 개수 저장 배열
+	memset(board, -1, sizeof(board));
 	for (int i = 0; i < pos.size(); i++)
 	{
-		int empty = 0;
 		int px = pos[i].first;
 		int py = pos[i].second;
-
-		for (int d = 0; d < 4; d++)
-		{
-			int nx = dx[d] + px;
-			int ny = dy[d] + py;
-			if (0 <= nx && nx < N && 0 <= ny && ny < N && Class[nx][ny] == EMPTY)
-				empty++;
-		}
+		int empty = find_empty(px, py);
 		board[px][py] = empty;
 		if (empty >= max_empty)
 		{
@@ -53,7 +83,7 @@ void calc_empty(stu_pref stu, vector<pair<int, int>> pos, int& x, int& y)
 	{
 		for (int j = 0; j < N; j++)
 		{
-			if (board[i][j] == max_empty)
+			if (board[i][j] == max_empty) // 조건 3 
 			{
 				x = i;
 				y = j;
@@ -63,30 +93,19 @@ void calc_empty(stu_pref stu, vector<pair<int, int>> pos, int& x, int& y)
 	}
 }
 
-vector< pair<int, int>> calc_pref(stu_pref stu)
+// 빈 칸에서 해당 학생의 선호학생 수를 담은 vector 반환
+vector< pair<int, int>> calc_pref(stu s)
 {
 	vector< pair<int, int>> pref_pos;
 	int board[SIZE][SIZE] = { 0, }; // 주변 선호 학생 개수 저장 배열
+	memset(board, -1, sizeof(board));
 	int max_pref = 0;
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < N; j++)
 		{
 			if (Class[i][j] == EMPTY) { // 빈칸
-				int pref = 0;
-				for (int d = 0; d < 4; d++)
-				{
-					int nx = dx[d] + i;
-					int ny = dy[d] + j;
-					if (0 <= nx && nx < N && 0 <= ny && ny < N)
-					{
-						for (int p = 0; p < 4; p++)
-						{
-							if (stu.pref[p] == Class[nx][ny])
-								pref++;
-						}
-					}
-				}
+				int pref = find_pref(s, i, j);
 				board[i][j] = pref;
 				if (pref > max_pref)
 					max_pref = pref;
@@ -108,62 +127,28 @@ vector< pair<int, int>> calc_pref(stu_pref stu)
 
 void solve()
 {
-	
 	for(int i = 0; i < stu_q.size(); i++){
-		stu_pref a = stu_q[i];
 		int ax = 0;
 		int ay = 0;
-		vector< pair<int, int>> pos = calc_pref(a);
-		// 조건 2
-		if (pos.size() > 1) {
-			calc_empty(a, pos, ax, ay);
+		vector< pair<int, int>> pos = calc_pref(stu_q[i]);
+		
+		if (pos.size() > 1) { // 조건 1을 만족하는 칸이 1개 이상일 경우
+			calc_empty(pos, ax, ay); // 조건 2
 		}
-		else {
-			Class[pos[0].first][pos[0].second] = a.stuNum;
-			continue;
+		else { // 조건 1을 만족하는 칸이 1개일 경우
+			ax = pos[0].first;
+			ay = pos[0].second;
 		}
-		//cout << ax << " " << ay << endl;
-		Class[ax][ay] = a.stuNum;
+		Class[ax][ay] = stu_q[i].stuNum;
+		stu_q[i].final_x = ax;
+		stu_q[i].final_y = ay;
 	}
-	
-	//for (int i = 0; i < N; i++)
-	//{
-	//	for (int j = 0; j < N; j++)
-	//	{
-	//		cout << Class[i][j] << " ";
-	//	}
-	//	cout << endl;
-	//}
+
 	int score = 0;
-	for (int i = 0; i < N; i++)
-	{
-		for (int j = 0; j < N; j++)
-		{
-			for (int s = 0; s < stu_q.size(); s++)
-			{
-				if (Class[i][j] == stu_q[s].stuNum)
-				{
-					int pref = 0;
-					for (int d = 0; d < 4; d++)
-					{
-						int nx = dx[d] + i;
-						int ny = dy[d] + j;
-						if (0 <= nx && nx < N && 0 <= ny && ny < N)
-						{
-							for (int p = 0; p < 4; p++)
-							{
-								if (stu_q[s].pref[p] == Class[nx][ny])
-									pref++;
-							}
-						}
-					}
-					if (pref == 4) score += 1000;
-					else if (pref == 3) score += 100;
-					else if (pref == 2) score += 10;
-					else if (pref == 1) score += 1;
-				}
-			}
-		}
+	for (int i = 0; i < stu_q.size(); i++) {
+		int result = find_pref(stu_q[i], stu_q[i].final_x, stu_q[i].final_y);
+		if (result == 0) continue;
+		score += int(pow(10, result - 1));
 	}
 	cout << score;
 }
@@ -172,7 +157,6 @@ int main()
 {
 	freopen_s(new FILE*, "text.txt", "r", stdin);
 	cin >> N;
-	N;
 	for (int i = 0; i < N * N; i++)
 	{
 		int stu, a, b, c, d;
@@ -180,9 +164,5 @@ int main()
 		stu_q.push_back({ stu, a, b, c, d });
 	}
 	solve();
-	/*while (stu_q.size())
-	{
-		
-	}*/
 	return 0;
 }
