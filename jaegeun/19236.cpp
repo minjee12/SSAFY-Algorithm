@@ -34,14 +34,20 @@ void swap(int& x, int& y)
 }
 
 // 보드 출력
-void print_board(int b[SIZE][SIZE])
+void print_board(int b[SIZE][SIZE], bool direction = false)
 {
 	for (int i = 0; i < SIZE; i++) {
 		for (int j = 0; j < SIZE; j++) {
-			cout << b[i][j] << "," << fish_arr[b[i][j]].direction <<"\t";
+			if (direction) {
+				cout << b[i][j] << "," << fish_arr[b[i][j]].direction << "\t";
+			}
+			else {
+				cout << b[i][j] << " ";
+			}
 		}
 		cout << endl;
 	}
+	cout << "=========================" << endl;
 }
 
 // 방향 전환
@@ -50,57 +56,49 @@ void change_direction(int fish_num)
 	fish_arr[fish_num].direction = (fish_arr[fish_num].direction + 1) % 8;
 }
 
-// fish_num에 해당하는 물고기와 자리를 바꿀 위치를 nx ny에 저장
-bool find_next_fish(int fish_num, int board[SIZE][SIZE], int& nx, int& ny)
-{
-	int cx = fish_arr[fish_num].fx; // 현재 물고기 x
-	int cy = fish_arr[fish_num].fy; // 현재 물고기 y
-	for (int i = 0; i < 8; i++)
-	{
-		int cd = fish_arr[fish_num].direction; // 현재 물고기 방향
-		int npx = cx + dx[cd]; // 방향의 위치
-		int npy = cy + dy[cd];
-		if (0 <= npx && npx < SIZE && 0 <= npy && npy < SIZE) {
-			if (board[npx][npy] == 0)
-			{
-				nx = npx;
-				ny = npy;
-				return false;
-			}
-			else if (1 <= board[npx][npy] && board[npx][npy] <= 16) // 다음칸이 물고기일 경우
-			{
-				if (fish_arr[board[npx][npy]].alive) { // 살아있는 물고기의 경우
-					nx = npx;
-					ny = npy;
-					return true;
-				}
-			}
-		}
-		change_direction(fish_num);
-	}
-}
-
-//  
-void move_fish(int target_board[SIZE][SIZE])
+void move_fish(int board[SIZE][SIZE])
 {
 	// 숫자가 작은 물고기부터
 	for (int i = 0; i < 17; i++)
 	{
 		if (fish_arr[i].alive) // 살아있는 물고기의 경우
 		{
-			int fcx = fish_arr[i].fx;
-			int fcy = fish_arr[i].fy;
-			int nx = fcx;
-			int ny = fcy;
-			if (find_next_fish(i, target_board, nx, ny) == true) // 물고기와 바꿀 경우
+			// 방향 전환 총 8번 반복
+			while (true)
 			{
-				// 다음 물고기 위치를 다음칸으로 변경
-				fish_arr[target_board[nx][ny]].fx = fish_arr[i].fx;
-				fish_arr[target_board[nx][ny]].fy = fish_arr[i].fy;
+				// 물고기 현재 위치
+				int cur_fish_x = fish_arr[i].fx;
+				int cur_fish_y = fish_arr[i].fy;
+				// 현재 방향 기준 다음 위치 계산
+				int cur_fish_direction = fish_arr[i].direction;
+				int next_fish_x = fish_arr[i].fx + dx[cur_fish_direction];
+				int next_fish_y = fish_arr[i].fy + dy[cur_fish_direction];
+				if (0 <= next_fish_x && next_fish_x < SIZE && 0 <= next_fish_y && next_fish_y < SIZE) {
+					if (board[next_fish_x][next_fish_y] == 0) // 빈칸으로 이동
+					{
+						// 다음칸으로 위치 변경
+						fish_arr[i].fx = next_fish_x;
+						fish_arr[i].fy = next_fish_y;
+						// board상 위치 변경
+						swap(board[cur_fish_x][cur_fish_y], board[next_fish_x][next_fish_y]);
+						break; // 다음 물고기 변경
+					}
+					else if (1 <= board[next_fish_x][next_fish_y] && board[next_fish_x][next_fish_y] <= 16)
+						// 물고기와 자리 바꿀 경우
+					{
+						int swap_fish_num = board[next_fish_x][next_fish_y]; // 자리 바꿀 물고기 번호
+						// 자리 바꿀 물고기 위치를 현재 물고기 위치로 변경
+						fish_arr[swap_fish_num].fx = cur_fish_x;
+						fish_arr[swap_fish_num].fy = cur_fish_y;
+						// 현재 물고기 위치를 자리 바꿀 물고기 위치로 변경
+						fish_arr[i].fx = next_fish_x;
+						fish_arr[i].fy = next_fish_y;
+						swap(board[cur_fish_x][cur_fish_y], board[next_fish_x][next_fish_y]);
+						break; // 다음 물고기 변경
+					}
+				}
+				change_direction(i); // 현재 물고기의 방향 변경
 			}
-			swap(target_board[nx][ny], target_board[fcx][fcy]);
-			fish_arr[i].fx = nx;
-			fish_arr[i].fy = ny;
 		}
 	}
 }
@@ -134,29 +132,35 @@ void solve(int board[SIZE][SIZE], int score, int shark_x, int shark_y, int shark
 {
 	int board_cpy[SIZE][SIZE] = { 0, };
 	memcpy(board_cpy, board, sizeof(board_init));
-	
+	fish_info fish_arr_cpy[17] = { 0, }; // 물고기 정보
 	// 상어 칸에 해당하는 물고기 먹힘
-	fish_arr[board_cpy[shark_x][shark_y]].alive = false;
-	board_cpy[shark_x][shark_y] = SHARK;
-
-	move_fish(board_cpy);
-	vector<pair<int, int>> shark_positions = get_next_shark_positions(board_cpy, shark_x, shark_y, shark_direction);
+	move_fish(board_cpy); // 물고기 이동
+	memcpy(fish_arr_cpy, fish_arr, sizeof(fish_arr)); // 물고기 이동 상태 저장
+	// 상어가 갈 수 있는 위치
+	vector<pair<int, int>> shark_positions = get_next_shark_positions(board_cpy, shark_x, shark_y, shark_direction); 
 	if (shark_positions.size() == 0) // 먹을 물고기가 없을 경우
 	{
-		cout << score << endl;
 		if (score > max_score)
 		{
 			max_score = score;
 			return;
 		}
 	}
+
 	for (int i = 0; i < shark_positions.size(); i++)
 	{
-		int shark_nx = shark_positions[i].first;
-		int shark_ny = shark_positions[i].second;
-		int shark_nd = fish_arr[board_cpy[shark_nx][shark_ny]].direction;
-		board_cpy[shark_x][shark_y] = 0;
-		solve(board_cpy, score + board_cpy[shark_nx][shark_ny], shark_nx, shark_ny, shark_nd);
+		int shark_next_x = shark_positions[i].first; // 상어의 다음 위치
+		int shark_next_y = shark_positions[i].second;
+		int next_fish = board_cpy[shark_next_x][shark_next_y]; // 먹힐 물고기
+		int shark_next_d = fish_arr[next_fish].direction; // 상어의 다음 방향
+		board_cpy[shark_next_x][shark_next_y] = SHARK; // 물고기 먹힘
+		board_cpy[shark_x][shark_y] = 0; // 빈칸 처리
+		fish_arr[next_fish].alive = false; // 죽음 처리
+		solve(board_cpy, score + next_fish, shark_next_x, shark_next_y, shark_next_d);
+		fish_arr[next_fish].alive = true; // 살리기
+		board_cpy[shark_x][shark_y] = SHARK; // 상어 위치 복구
+		board_cpy[shark_next_x][shark_next_y] = next_fish; // 먹힌 물고기 복구
+		memcpy(fish_arr, fish_arr_cpy, sizeof(fish_arr)); // 물고기 상태 복구
 	}
 }
 
@@ -172,7 +176,11 @@ int main()
 			board_init[i][j] = fish_num;
 		}
 	}
-	solve(board_init, board_init[0][0], 0, 0, fish_arr[board_init[0][0]].direction);
+	int first_fish = board_init[0][0];
+	int next_direction = fish_arr[first_fish].direction;
+	fish_arr[first_fish].alive = false;
+	board_init[0][0] = SHARK;
+	solve(board_init, first_fish, 0, 0, next_direction);
 	cout << max_score;
 	return 0;
 }
