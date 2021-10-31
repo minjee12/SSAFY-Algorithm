@@ -1,5 +1,7 @@
-﻿#include <iostream>
+#include <iostream>
+#include <cstring>
 #include <vector>
+#include <queue>
 
 #define MAX 20
 using namespace std;
@@ -11,7 +13,9 @@ int R, C, K; // 집 크기, 온도
 
 int home[MAX][MAX];
 int temp[MAX][MAX]; // 온도값 저장
-vector<int> wall[MAX][MAX]; // 벽 저장
+int temp_temp[MAX][MAX]; // 임시 온도값
+bool wall[MAX][MAX][5]; // 벽 저장
+bool visited[MAX][MAX]; // 방문 확인
 vector<pair<pair<int, int>, int>> heater_pos; // 온풍기 x, y, 바람 방향
 vector<pair<int, int>> check_pos;
 
@@ -26,7 +30,7 @@ void print_temp() {
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
 			if (temp[i][j]) cout << temp[i][j];
-			else cout << " ";
+			else cout << 0;
 			cout << " ";
 		}
 		cout << "\n";
@@ -35,43 +39,117 @@ void print_temp() {
 
 // 온풍기 가동
 void heater_spread(int heater_x, int heater_y, int direct) {
-	int temp_heat = 5;
+	memset(temp_temp, 0, sizeof(temp_temp));
+	memset(visited, 0, sizeof(visited));
 	int st_x = heater_x + dx[direct];
 	int st_y = heater_y + dy[direct];
-	for (int i = 0; i < 5; i++) {
-		if (direct <= 2) {
-			for (int j = 0; j < i * 2 + 1; j++) {
-				if (st_x + j < 0) continue;
-				if (st_x + j >= R) break;
-				bool wall_flag = false; // 벽이 있을 경우
-				// 벽 확인
-				for (int w = 0; w < wall[st_x + j][st_y].size(); w++) {
-					if (direct == 1 && wall[st_x + j][st_y][w] == 2) wall_flag = true;
-					if (direct == 2 && wall[st_x + j][st_y][w] == 1) wall_flag = true;
+	temp_temp[st_x][st_y] = 5;
+	visited[st_x][st_y] = true;
+	queue < pair<int, int>>q;
+	q.push({ st_x, st_y });
+	while (q.size()) {
+		int cx = q.front().first;
+		int cy = q.front().second;
+		q.pop();
+
+		if (temp_temp[cx][cy] == 1) continue;
+		if (direct == 1) {
+			for (int i = -1; i <= 1; i++) {
+				int nx = cx + i;
+				int ny = cy + dy[direct];
+				if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
+				if (temp_temp[nx][ny]) continue;
+				if (visited[nx][ny]) continue;
+				if (i == -1) {
+					if (wall[cx][cy][3]) continue;
+					if (wall[nx][ny][2]) continue;
 				}
-				if (wall_flag) continue; // 방향과 상반되는 벽 있을 경우 채우지 않음
-				temp[st_x + j][st_y] += 5 - i;
+				if (i == 0) {
+					if (wall[cx][cy][direct]) continue;
+				}
+				if (i == 1) {
+					if (wall[cx][cy][4]) continue;
+					if (wall[nx][ny][2]) continue;
+				}
+				q.push({ nx, ny });
+				visited[nx][ny] = true;
+				temp_temp[nx][ny] = temp_temp[cx][cy] - 1;
 			}
-			st_x--;
-			st_y = st_y + dy[direct];
-			if (st_y >= C) break;
 		}
-		else {
-			for (int j = 0; j < i * 2 + 1; j++) {
-				if (st_y + j < 0) continue;
-				if (st_y + j >= C) break;
-				bool wall_flag = false;
-				// 벽 확인
-				for (int w = 0; w < wall[st_x][st_y + j].size(); w++) {
-					if (direct == 3 && wall[st_x][st_y + j][w] == 4) wall_flag = true;
-					if (direct == 4 && wall[st_x][st_y + j][w] == 3) wall_flag = true;
+		else if (direct == 2) {
+			for (int i = -1; i <= 1; i++) {
+				int nx = cx + i;
+				int ny = cy + dy[direct];
+				if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
+				if (temp_temp[nx][ny]) continue;
+				if (visited[nx][ny]) continue;
+				if (i == -1) {
+					if (wall[cx][cy][3]) continue;
+					if (wall[nx][ny][1]) continue;
 				}
-				if (wall_flag) continue; // 방향과 상반되는 벽 있을 경우 채우지 않음
-				temp[st_x][st_y + j] += 5 - i;
+				if (i == 0) {
+					if (wall[cx][cy][direct]) continue;
+				}
+				if (i == 1){
+					if(wall[cx][cy][4]) continue;
+					if (wall[nx][ny][1]) continue;
+				}
+				q.push({ nx, ny });
+				visited[nx][ny] = true;
+				temp_temp[nx][ny] = temp_temp[cx][cy] - 1;
 			}
-			st_x = st_x + dx[direct];
-			if (st_x >= R) break;
-			st_y--;
+		}
+		else if (direct == 3) {
+			for (int i = -1; i <= 1; i++) {
+				int nx = cx + dx[direct];
+				int ny = cy + i;
+				if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
+				if (temp_temp[nx][ny]) continue;
+				if (visited[nx][ny]) continue;
+				if (i == -1) {
+					if (wall[cx][cy][2]) continue;
+					if (wall[nx][ny][4]) continue;
+				}
+				if (i == 0) {
+					if (wall[cx][cy][direct]) continue;
+				}
+				if (i == 1) {
+					if (wall[cx][cy][1]) continue;
+					if (wall[nx][ny][4]) continue;
+				}
+				q.push({ nx, ny });
+				visited[nx][ny] = true;
+				temp_temp[nx][ny] = temp_temp[cx][cy] - 1;
+			}
+		}
+		else if(direct == 4) {
+			for (int i = -1; i <= 1; i++) {
+				int nx = cx + dx[direct];
+				int ny = cy + i;
+				if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
+				if (temp_temp[nx][ny]) continue;
+				if (visited[nx][ny]) continue;
+				if (i == -1) {
+					if (wall[cx][cy][2]) continue;
+					if (wall[nx][ny][3]) continue;
+				}
+				if (i == 0) {
+					if (wall[cx][cy][direct]) continue;
+				}
+				if (i == 1) {
+					if (wall[cx][cy][1]) continue;
+					if (wall[nx][ny][3]) continue;
+				}
+				q.push({ nx, ny });
+				visited[nx][ny] = true;
+				temp_temp[nx][ny] = temp_temp[cx][cy] - 1;
+			}
+		}
+		
+	}
+	for (int i = 0; i < R; i++) {
+		for (int j = 0; j < C; j++) {
+			temp[i][j] += temp_temp[i][j];
 		}
 	}
 }
@@ -95,39 +173,43 @@ void spread_temp() {
 				for (int d = 1; d <= 4; d++) {
 					bool flag = false;
 					// 벽 확인
-					for (int w = 0; w < wall[i][j].size(); w++) {
-						if (wall[i][j][w] == d) {
-							flag = true;
-							break;
-						}
-					}
-					if (flag) continue;
+					if (wall[i][j][d]) continue;
 					int nx = i + dx[d];
 					int ny = j + dy[d];
 					if (nx < 0 || nx >= R || ny < 0 || ny >= C) continue;
 					if (temp[i][j] <= temp[nx][ny]) continue;
-					int diff = temp[i][j] - temp[nx][ny];
-					int split_temp = diff / 4;
-					temp_temp[nx][ny] += split_temp;
-					base_temp -= split_temp;
+					int diff = (temp[i][j] - temp[nx][ny]) / 4;
+//					int split_temp = diff / 4;
+					temp_temp[nx][ny] += diff;
+					base_temp -= diff;
 				}
 				temp_temp[i][j] += base_temp;
 			}
 		}
 	}
 	memcpy(temp, temp_temp, sizeof(temp));
-
 }
 
 void decrease_temp() {
-	for (int i = 0; i < C; i++) {
-		if (temp[0][i] > 0) temp[0][i]--;
-		if (temp[R - 1][i] > 0) temp[R - 1][i]--;
-	}
-	
 	for (int i = 0; i < R; i++) {
-		if (temp[i][0] > 0) temp[i][0]--;
-		if (temp[i][C - 1] > 0)temp[i][C - 1]--;
+		for (int j = 0; j < C; j++) {
+			if (i == 0 && temp[i][j] > 0) {
+				temp[i][j]--;
+				continue;
+			}
+			if (i == R - 1 && temp[i][j] > 0) {
+				temp[i][j]--;
+				continue;
+			}
+			if (j == 0 && temp[i][j] > 0) {
+				temp[i][j]--;
+				continue;
+			}
+			if (j == C - 1 && temp[i][j] > 0) {
+				temp[i][j]--;
+				continue;
+			}
+		}
 	}
 }
 
@@ -152,15 +234,14 @@ int main(){
 		x--;
 		y--;
 		if (t == 0) { // (x, y)와 (x-1, y) 사이 벽
-			wall[x][y].push_back(3); // 북
-			wall[x - 1][y].push_back(4); // 남
+			wall[x][y][3] = true; // 북
+			wall[x - 1][y][4] = true; // 남
 		}
 		else { // (x, y)와 (x, y-1) 사이 벽
-			wall[x][y].push_back(1);
-			wall[x][y + 1].push_back(2);
+			wall[x][y][1] = true;
+			wall[x][y + 1][2] = true;
 		}
 	}
-	
 	int c_cnt = 0;
 	while (true) {
 		heat_home();
@@ -169,8 +250,6 @@ int main(){
 		c_cnt++;
 		if (check_temp() || c_cnt > 100) break;
 	}
-	cout << "\n\n";
-	print_temp();
 	cout << c_cnt;
 	return 0;
 }
