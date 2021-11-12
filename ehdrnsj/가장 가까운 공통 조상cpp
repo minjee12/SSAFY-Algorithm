@@ -1,0 +1,48 @@
+#include <iostream>
+#include <string.h>
+
+#define MAX 10001
+
+using namespace std;
+
+int boss[MAX];
+int checkBox[MAX];
+
+void josang(int a, int b) {
+	int now = a;
+	while (1) {
+		checkBox[now] = 1;
+		if (boss[now] == 0) break;
+		now = boss[now];
+	}
+
+	now = b;
+	while (1) {
+		if (checkBox[now] == 1) break;
+		now = boss[now];
+	}
+	cout << now << "\n";
+}
+
+int main() {
+	int T;
+	cin >> T;
+	for (int i = 0; i < T; i++) {
+		memset(boss, 0, MAX);
+		memset(checkBox, 0, MAX);
+		int N;
+		cin >> N;
+		for (int n = 1; n <= N; n++) {
+			int a, b;
+			cin >> a >> b;
+			if (n != N) {
+				boss[b] = a;
+			}
+			else {
+				josang(a, b);
+			}
+		}
+	}
+
+	return 0;
+}
