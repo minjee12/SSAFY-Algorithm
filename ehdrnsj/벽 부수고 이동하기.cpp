@@ -41,9 +41,9 @@ int move(int starty, int startx, int endy, int endx) {
 			node tmp = now;
 			if (map[Y][X] == '0' && used[Y][X][tmp.can_break] == 1) continue;
 			if (map[Y][X] == '1' && tmp.can_break == 0) continue;
-			if (map[Y][X] == '1' && used[Y][X][0] == 1) continue;
 
-			if (map[Y][X] == '1') tmp.can_break = 0;
+			if (map[Y][X] == '1' && used[Y][X][tmp.can_break - 1] == 1) continue;
+			else if (map[Y][X] == '1' && used[Y][X][tmp.can_break - 1] == 0) tmp.can_break--;
 
 			tmp.y = Y;  tmp.x = X;
 			tmp.lv++;
