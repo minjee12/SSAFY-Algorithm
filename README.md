@@ -60,4 +60,4 @@
 ### 21-11-16
 * [백준 1660 - 캡틴 이다솜](https://www.acmicpc.net/problem/1660)
 * [백준 2407 - 조합](https://www.acmicpc.net/problem/2407)
-* [백준 5104 - 스타트링크](https://www.acmicpc.net/problem/5104)
+* [백준 5014 - 스타트링크](https://www.acmicpc.net/problem/5014)
