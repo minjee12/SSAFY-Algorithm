@@ -12,7 +12,9 @@ void josang(int a, int b) {
 	int now = a;
 	while (1) {
 		checkBox[now] = 1;
-		if (boss[now] == 0) break;
+		if (boss[now] == 0) {
+			break;
+		}
 		now = boss[now];
 	}
 
@@ -28,8 +30,8 @@ int main() {
 	int T;
 	cin >> T;
 	for (int i = 0; i < T; i++) {
-		memset(boss, 0, MAX);
-		memset(checkBox, 0, MAX);
+		memset(boss, 0, 4 * MAX); // 아.. int형이라 x 4가 필요함
+		memset(checkBox, 0, 4 * MAX);
 		int N;
 		cin >> N;
 		for (int n = 1; n <= N; n++) {
