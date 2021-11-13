@@ -52,9 +52,12 @@
 * [백준 2133 - 타일 채우기](https://www.acmicpc.net/problem/2133)
 * [백준 2346 - 풍선 터트리기](https://www.acmicpc.net/problem/2346)
 * [백준 2841 - 외계인의 기타 연주](https://www.acmicpc.net/problem/2841)
-### 21-11-09
+### 21-11-13
 * [백준 1976 - 여행 가자](https://www.acmicpc.net/problem/1976)
 * [백준 2206 - 벽 부수고 이동하기](https://www.acmicpc.net/problem/2206)
 * [백준 3584 - 가장 가까운 공통 조상](https://www.acmicpc.net/problem/3584)
 * [백준 14442 - 벽 부수고 이동하기 2](https://www.acmicpc.net/problem/14442)
-
+### 21-11-16
+* [백준 1660 - 캡틴 이다솜](https://www.acmicpc.net/problem/1660)
+* [백준 2407 - 조합](https://www.acmicpc.net/problem/2407)
+* [백준 5104 - 스타트링크](https://www.acmicpc.net/problem/5104)
