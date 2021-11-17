@@ -3,7 +3,7 @@
 using namespace std;
 #define MAX 1000000
 
-int F, S, G, U/*À§·Î UÃþ*/, D/*¾Æ·¡·Î DÃþ*/;
+int F, S, G, U/*Ã€Â§Â·ÃŽ UÃƒÃ¾*/, D/*Â¾Ã†Â·Â¡Â·ÃŽ DÃƒÃ¾*/;
 int visited[MAX + 1] = {};
 int button[2] = {};
 struct Node {
@@ -27,7 +27,7 @@ int bfs() {
 
 		for (int i = 0; i < 2; i++) {
 			int ns = stair + button[i];
-			if (ns >= 1 && ns <= F && visited[ns] != 0) {
+			if (ns >= 1 && ns <= F && visited[ns] == 0) {
 				visited[ns] = 1;
 				que.push({ ns,lev + 1 });
 			}
