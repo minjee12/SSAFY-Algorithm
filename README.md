@@ -61,3 +61,7 @@
 * [백준 1660 - 캡틴 이다솜](https://www.acmicpc.net/problem/1660)
 * [백준 2407 - 조합](https://www.acmicpc.net/problem/2407)
 * [백준 5014 - 스타트링크](https://www.acmicpc.net/problem/5014)
+### 21-11-20
+* [백준 1068  - 트리](https://www.acmicpc.net/problem/1068)
+* [백준 2293 - 동전 1](https://www.acmicpc.net/problem/2293)
+* [백준 18428 - 감시 피하기](https://www.acmicpc.net/problem/1660)
