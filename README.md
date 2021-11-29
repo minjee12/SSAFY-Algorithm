@@ -63,5 +63,17 @@
 * [백준 5014 - 스타트링크](https://www.acmicpc.net/problem/5014)
 ### 21-11-20
 * [백준 1068  - 트리](https://www.acmicpc.net/problem/1068)
-* [백준 2293 - 동전 1](https://www.acmicpc.net/problem/2293)
+* [백준 2293 - 동전1](https://www.acmicpc.net/problem/2293)
 * [백준 18428 - 감시 피하기](https://www.acmicpc.net/problem/1660)
+### 21-11-24
+* [백준 1753  - 최단경로](https://www.acmicpc.net/problem/1753)
+* [백준 23290 - 마법 상어와 복제](https://www.acmicpc.net/problem/23290)
+* [백준 7795 - 먹을 것인가 먹힐 것인가](https://www.acmicpc.net/problem/7795)
+### 21-11-27
+* [백준 14221  - 편의점](https://www.acmicpc.net/problem/14221)
+* [백준 1446 - 지름길](https://www.acmicpc.net/problem/1446)
+* [백준 16964 - DFS 스페셜 저지](https://www.acmicpc.net/problem/16964)
+### 21-12-01
+* [백준 14221  - 편의점](https://www.acmicpc.net/problem/14221)
+* [백준 1446 - 지름길](https://www.acmicpc.net/problem/1446)
+* [백준 16964 - DFS 스페셜 저지](https://www.acmicpc.net/problem/16964)
