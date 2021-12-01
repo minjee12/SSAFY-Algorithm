@@ -74,6 +74,7 @@
 * [백준 1446 - 지름길](https://www.acmicpc.net/problem/1446)
 * [백준 16964 - DFS 스페셜 저지](https://www.acmicpc.net/problem/16964)
 ### 21-12-01
-* [백준 14221  - 편의점](https://www.acmicpc.net/problem/14221)
-* [백준 1446 - 지름길](https://www.acmicpc.net/problem/1446)
 * [백준 16964 - DFS 스페셜 저지](https://www.acmicpc.net/problem/16964)
+* [백준 16940  - BFS 스폐셜 져지](https://www.acmicpc.net/problem/16940)
+* [백준 17140 - 이차원 배열과 연산](https://www.acmicpc.net/problem/17140)
+* [백준 21278 - 호석이 두 마리 치킨](https://www.acmicpc.net/problem/21278)
