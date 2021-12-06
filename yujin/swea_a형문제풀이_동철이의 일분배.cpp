@@ -1,5 +1,3 @@
-/*
-
 #include <stdio.h>
 #include <string.h>
 int n;
@@ -45,5 +43,3 @@ int main() {
 	
 	return 0;
 }
-
-*/
