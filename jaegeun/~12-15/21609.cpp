@@ -21,7 +21,6 @@ typedef struct {
     int r_cnt; // 무지개 블록 사이즈
     int row; // 기준 블록 행
     int col; // 기준 블록 열
-    int num; // 방문 기록 번호
 }group_info;
 
 int N, M; // 격자 크기, 색상 개수
@@ -79,9 +78,9 @@ group_info find_group(int x, int y, int idx) {
                 if (temp[i][j] && board[i][j] != 0) visited[i][j] = idx;
             }
         }
-        return { block_cnt, rainbow_cnt, x, y, idx };
+        return { block_cnt, rainbow_cnt, x, y };
     }
-    return { 0, 0, x, y, -1 };
+    return { 0, 0, x, y };
 }
 
 void get_groups(vector<group_info>& g) {
@@ -135,6 +134,7 @@ void rotate_board() {
         }
     }
 }
+
 void remove_block(int x, int y) {
     queue<pair<int, int>>q;
     q.push({ x, y });
@@ -167,7 +167,6 @@ void solve() {
         get_groups(groups);
         if (groups.size() == 0) break;
         sort(groups.begin(), groups.end(), compair);
-        int rm_num = groups[0].num;
         score += groups[0].g_size * groups[0].g_size;
         remove_block(groups[0].row, groups[0].col);
         gravity();
