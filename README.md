@@ -78,3 +78,7 @@
 * [백준 16940  - BFS 스폐셜 져지](https://www.acmicpc.net/problem/16940)
 * [백준 17140 - 이차원 배열과 연산](https://www.acmicpc.net/problem/17140)
 * [백준 21278 - 호석이 두 마리 치킨](https://www.acmicpc.net/problem/21278)
+### 21-12-18
+* [백준 20061 - 모노미노도미노2](https://www.acmicpc.net/problem/20061)
+* [백준 14425  - 문자열 집합](https://www.acmicpc.net/problem/14425)
+* [백준 13700 - 완전 범죄](https://www.acmicpc.net/problem/13700)
