@@ -4,7 +4,7 @@ using namespace std;
 #define max 100001
 
 int n, s, d, f, b, k;
-//°Ç¹°¼ö, ±İÀº¹æ À§Ä¡, ´ëµµ Áı, ÀüÁø ÈÄÁø ¼Óµµ, °æÂû¼­ °³¼ö
+//ê±´ë¬¼ìˆ˜, ê¸ˆì€ë°© ìœ„ì¹˜, ëŒ€ë„ ì§‘, ì „ì§„ í›„ì§„ ì†ë„, ê²½ì°°ì„œ ê°œìˆ˜
 
 int map[max] = {};
 int visited[max] = {};
@@ -58,7 +58,7 @@ int main() {
 	crime(s);
 
 	if (ans == -1) {
-		cout << "bug found\n";
+		cout << "BUG FOUND\n";
 	}
 	else {
 		cout << ans << "\n";
